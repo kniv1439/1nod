@@ -1,0 +1,603 @@
+import numpy as np  # type: ignore
+import torch  # type: ignore
+import torch.nn as nn  # type: ignore
+import torch.nn.functional as F  # type: ignore
+import time
+from collections import defaultdict
+
+from utils.multihead_flashdiff_2 import MultiheadFlashDiff2
+from models.modules import TimeEncoder
+from utils.utils import NeighborSampler
+from utils.rotary import apply_rotary_emb
+from utils.Other import FourierLayer, series_decomp_multi
+from utils.RoPE import LlamaDynamicNTKScalingRotaryEmbedding
+# from utils.wsdmmodule import get_spatial_distance  # 注释掉原来的导入
+
+
+# 尝试导入 flash_attn，如果不可用则回退
+try:
+    from flash_attn import flash_attn_func  # type: ignore
+    FLASH_ATTN_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    FLASH_ATTN_AVAILABLE = False
+    print("WARNING: flash_attn not available, falling back to standard attention")
+
+from utils.rms_norm import RMSNorm
+
+
+class DyGFormerRFRF(nn.Module):
+    """LDIFFDyG 的 RoPE 改进版本：使用 LlamaDynamicNTKScalingRotaryEmbedding 进行动态 NTK 缩放。
+    仅使用一阶邻居，四通道特征（node, edge, time, neighbor_co_occurrence），无 spatial 通道、无二阶邻居。"""
+
+    def __init__(
+        self,
+        node_raw_features: np.ndarray,
+        edge_raw_features: np.ndarray,
+        neighbor_sampler: NeighborSampler,
+        time_feat_dim: int,
+        channel_embedding_dim: int,
+        num_heads: int,
+        num_layers: int = 2,
+        dropout: float = 0.1,
+        max_input_sequence_length: int = 128,
+        device: str = "cpu",
+        use_second_hop: bool = False,  # 新增，默认True
+        num_neighbors: int = 20,  # 新增，控制一阶邻居数量
+    ):
+        super(DyGFormerRFRF, self).__init__()
+
+        # ----------------- 时间统计相关变量 -----------------
+        self.timing_stats = defaultdict(float)  # 存储各部分累计时间
+        self.epoch_timing_stats = defaultdict(float)  # 存储当前epoch的时间统计
+        self.batch_count = 0  # 当前epoch的batch计数
+        self.enable_timing = True  # 是否启用时间统计
+
+        # ----------------- 与原 LDIFFDyG 相同的设置 -----------------
+        self.num_channels = 4  # node, edge, time, neighbor_co_occurrence（无 spatial、无二阶邻居）
+
+        # 对 channel_embedding_dim 做合法性校正，确保 attention_dim 可被 2*num_heads 整除
+        if (self.num_channels * channel_embedding_dim) % (2 * num_heads) != 0:
+            required_divisor = 2 * num_heads
+            # 计算需要的最小 channel_embedding_dim
+            min_channel_dim = (required_divisor + self.num_channels - 1) // self.num_channels
+            # 确保 channel_embedding_dim 不小于最小值
+            channel_embedding_dim = max(channel_embedding_dim, min_channel_dim)
+            # 调整到能被 required_divisor 整除的值
+            channel_embedding_dim = ((channel_embedding_dim * self.num_channels + required_divisor - 1) // required_divisor) * required_divisor // self.num_channels
+
+       
+
+        self.channel_embedding_dim = channel_embedding_dim
+        self.num_heads = num_heads
+        # use_second_hop, num_neighbors 保留参数以兼容配置，但已不再使用
+
+        self.node_raw_features = torch.from_numpy(node_raw_features.astype(np.float32))
+        self.edge_raw_features = torch.from_numpy(edge_raw_features.astype(np.float32))
+
+        self.neighbor_sampler = neighbor_sampler
+        self.node_feat_dim = self.node_raw_features.shape[1]
+        self.edge_feat_dim = self.edge_raw_features.shape[1]
+        self.time_feat_dim = time_feat_dim
+        self.num_layers = num_layers
+        self.dropout = dropout
+        self.max_input_sequence_length = max_input_sequence_length
+        self.device = device
+
+        self.time_encoder = TimeEncoder(time_dim=time_feat_dim)
+
+        # 邻居共现编码器
+        self.neighbor_co_occurrence_feat_dim = self.channel_embedding_dim
+        self.neighbor_co_occurrence_encoder = NeighborCooccurrenceEncoder(
+            neighbor_co_occurrence_feat_dim=self.neighbor_co_occurrence_feat_dim,
+            device=self.device,
+        )
+
+        # 各通道投影到统一维度
+        self.projection_layer = nn.ModuleDict(
+            {
+                "node": nn.Linear(
+                    in_features=self.node_feat_dim, out_features=self.channel_embedding_dim, bias=True
+                ),
+                "edge": nn.Linear(
+                    in_features=self.edge_feat_dim, out_features=self.channel_embedding_dim, bias=True
+                ),
+                "time": nn.Linear(
+                    in_features=self.time_feat_dim, out_features=self.channel_embedding_dim, bias=True
+                ),
+                "neighbor_co_occurrence": nn.Linear(
+                    in_features=self.neighbor_co_occurrence_feat_dim,
+                    out_features=self.channel_embedding_dim,
+                    bias=True,
+                ),
+            }
+        )
+
+       
+        
+
+        # 计算 attention 相关维度
+        self.attention_dim = self.num_channels * self.channel_embedding_dim
+        if (self.attention_dim // self.num_heads) % 2 != 0:
+            raise ValueError(
+                f"attention_dim ({self.attention_dim}) must be divisible by 2*num_heads ({2*self.num_heads})."
+            )
+        # 每个 head 使用 2*head_dim，因此 head_dim = (attention_dim / num_heads) / 2
+        self.head_dim = self.attention_dim // self.num_heads // 2
+
+        # 动态 NTK 缩放的 RoPE：缓存不同 rotary_dim 的实例
+        self._rotary_emb_cache = {}
+
+        # Transformer 解码器栈
+        self.transformers = nn.ModuleList(
+            [
+                TransformerDecoder(
+                    attention_dim=self.attention_dim,
+                    num_heads=self.num_heads,
+                    head_dim=self.head_dim,
+                    depth=layer_idx,
+                    dropout=self.dropout,
+                )
+                for layer_idx in range(self.num_layers)
+            ]
+        )
+
+        # 输出层：降回原始节点特征维度
+        self.output_layer = nn.Linear(
+            in_features=self.num_channels * self.channel_embedding_dim,
+            out_features=self.node_feat_dim,
+            bias=True,
+        )
+
+
+
+    # --------------------- Fourier & 预处理 ---------------------
+    
+
+    # --------------------- RoPE（动态 NTK 缩放） ---------------------
+    def _get_rotary_emb(self, seq_len: int, rotary_dim: int):
+        """根据 rotary_dim 获取或创建 LlamaDynamicNTKScalingRotaryEmbedding 实例"""
+        key = (rotary_dim)
+        if key not in self._rotary_emb_cache:
+            self._rotary_emb_cache[key] = LlamaDynamicNTKScalingRotaryEmbedding(
+                dim=rotary_dim,
+                max_position_embeddings=max(seq_len, self.max_input_sequence_length),
+                base=10000,
+                device=self.device,
+                scaling_factor=1.0,
+            ).to(self.device)
+        return self._rotary_emb_cache[key]
+
+    def compute_rotary_embedding(self, seq_len: int, rotary_dim: int):
+        """使用 LlamaDynamicNTKScalingRotaryEmbedding 生成 (cos, sin)。返回形状 (seq_len, rotary_dim//2)。"""
+        rotary_emb = self._get_rotary_emb(seq_len, rotary_dim)
+        # 创建一个虚拟张量用于推理 dtype & device
+        dummy = torch.zeros(1, 1, seq_len, rotary_dim, device=self.device, dtype=torch.float32)
+        cos_cached, sin_cached = rotary_emb(dummy, seq_len=seq_len)
+        # squeeze 掉前两维 -> (seq_len, rotary_dim)
+        cos_full = cos_cached.squeeze(0).squeeze(0)  # (seq_len, rotary_dim)
+        sin_full = sin_cached.squeeze(0).squeeze(0)
+        # 取前一半维度，形状符合 apply_rotary_emb 要求
+        cos = cos_full[:, : rotary_dim // 2].contiguous()
+        sin = sin_full[:, : rotary_dim // 2].contiguous()
+        return cos, sin
+
+    # ------------------ 核心：计算节点时序嵌入 ------------------
+    def compute_src_dst_node_temporal_embeddings(
+        self,
+        src_node_ids: np.ndarray,
+        dst_node_ids: np.ndarray,
+        node_interact_times: np.ndarray,
+        **kwargs,
+    ):
+        """
+        仅使用一阶邻居，四通道特征（node, edge, time, neighbor_co_occurrence）。
+        """
+        # -------- 邻居采样计时 --------
+        self.start_timing("邻居采样")
+        (
+            src_nodes_neighbor_ids_list,
+            src_nodes_edge_ids_list,
+            src_nodes_neighbor_times_list,
+        ) = self.neighbor_sampler.get_all_first_hop_neighbors(
+            node_ids=src_node_ids, node_interact_times=node_interact_times
+        )
+        (
+            dst_nodes_neighbor_ids_list,
+            dst_nodes_edge_ids_list,
+            dst_nodes_neighbor_times_list,
+        ) = self.neighbor_sampler.get_all_first_hop_neighbors(
+            node_ids=dst_node_ids, node_interact_times=node_interact_times
+        )
+        self.end_timing("邻居采样")
+        # -------- 序列补齐 --------
+        self.start_timing("序列补齐")
+        src_padded_nodes_neighbor_ids, src_padded_nodes_edge_ids, src_padded_nodes_neighbor_times = self.pad_sequences(
+            node_ids=src_node_ids,
+            node_interact_times=node_interact_times,
+            nodes_neighbor_ids_list=src_nodes_neighbor_ids_list,
+            nodes_edge_ids_list=src_nodes_edge_ids_list,
+            nodes_neighbor_times_list=src_nodes_neighbor_times_list,
+            max_input_sequence_length=self.max_input_sequence_length,
+        )
+        dst_padded_nodes_neighbor_ids, dst_padded_nodes_edge_ids, dst_padded_nodes_neighbor_times = self.pad_sequences(
+            node_ids=dst_node_ids,
+            node_interact_times=node_interact_times,
+            nodes_neighbor_ids_list=dst_nodes_neighbor_ids_list,
+            nodes_edge_ids_list=dst_nodes_edge_ids_list,
+            nodes_neighbor_times_list=dst_nodes_neighbor_times_list,
+            max_input_sequence_length=self.max_input_sequence_length,
+        )
+        self.end_timing("序列补齐")
+        
+        # -------- 四通道特征编码计时 --------
+        self.start_timing("四通道特征编码")
+        # -------- 获取特征 --------
+        (
+            src_padded_nodes_neighbor_node_raw_features,
+            src_padded_nodes_edge_raw_features,
+            src_padded_nodes_neighbor_time_features,
+        ) = self.get_features(
+            node_interact_times=node_interact_times,
+            padded_nodes_neighbor_ids=src_padded_nodes_neighbor_ids,
+            padded_nodes_edge_ids=src_padded_nodes_edge_ids,
+            padded_nodes_neighbor_times=src_padded_nodes_neighbor_times,
+            time_encoder=self.time_encoder,
+        )
+        (
+            dst_padded_nodes_neighbor_node_raw_features,
+            dst_padded_nodes_edge_raw_features,
+            dst_padded_nodes_neighbor_time_features,
+        ) = self.get_features(
+            node_interact_times=node_interact_times,
+            padded_nodes_neighbor_ids=dst_padded_nodes_neighbor_ids,
+            padded_nodes_edge_ids=dst_padded_nodes_edge_ids,
+            padded_nodes_neighbor_times=dst_padded_nodes_neighbor_times,
+            time_encoder=self.time_encoder,
+        )
+        # -------- 邻居共现特征 --------
+        (
+            src_padded_nodes_neighbor_co_occurrence_features,
+            dst_padded_nodes_neighbor_co_occurrence_features,
+        ) = self.neighbor_co_occurrence_encoder(
+            src_padded_nodes_neighbor_ids=src_padded_nodes_neighbor_ids,
+            dst_padded_nodes_neighbor_ids=dst_padded_nodes_neighbor_ids,
+        )
+        # -------- 通道拼接 + 投影（四通道：node, edge, time, neighbor_co_occurrence）--------
+        def project_and_cat(node_features, edge_features, time_features, co_occurrence_features):
+            return torch.cat([
+                self.projection_layer["node"](node_features),
+                self.projection_layer["edge"](edge_features),
+                self.projection_layer["time"](time_features),
+                self.projection_layer["neighbor_co_occurrence"](co_occurrence_features),
+            ], dim=-1)
+        src_features = project_and_cat(
+            src_padded_nodes_neighbor_node_raw_features,
+            src_padded_nodes_edge_raw_features,
+            src_padded_nodes_neighbor_time_features,
+            src_padded_nodes_neighbor_co_occurrence_features,
+        )
+        dst_features = project_and_cat(
+            dst_padded_nodes_neighbor_node_raw_features,
+            dst_padded_nodes_edge_raw_features,
+            dst_padded_nodes_neighbor_time_features,
+            dst_padded_nodes_neighbor_co_occurrence_features,
+        )
+        self.end_timing("四通道特征编码")
+        
+        # -------- RoPE生成计时 --------
+        self.start_timing("RoPE生成")
+        padded_seq_len = max(src_features.shape[1], dst_features.shape[1])
+        embed_dim = src_features.shape[-1]
+        headdim_total = embed_dim // self.num_heads // 2  # 等同 self.head_dim
+        rotary_dim = headdim_total  # 与原实现保持一致
+        cos, sin = self.compute_rotary_embedding(padded_seq_len, rotary_dim)
+        self.end_timing("RoPE生成")
+        
+        # -------- 差分注意力计时 --------
+        self.start_timing("差分注意力")
+        for transformer in self.transformers:
+            src_features = transformer(src_features, cos, sin, rotary_dim)
+            dst_features = transformer(dst_features, cos, sin, rotary_dim)
+        self.end_timing("差分注意力")
+        
+        # -------- 池化 + 输出层计时 --------
+        self.start_timing("池化输出层")
+        src_node_embeddings = self.output_layer(torch.mean(src_features, dim=1))
+        dst_node_embeddings = self.output_layer(torch.mean(dst_features, dim=1))
+        self.end_timing("池化输出层")
+        
+        # 数值稳定性检查
+        if torch.isnan(src_node_embeddings).any() or torch.isinf(src_node_embeddings).any():
+            print(f"WARNING: src_node_embeddings contains NaN or Inf values!")
+            src_node_embeddings = torch.nan_to_num(src_node_embeddings, nan=0.0, posinf=1.0, neginf=-1.0)
+        
+        if torch.isnan(dst_node_embeddings).any() or torch.isinf(dst_node_embeddings).any():
+            print(f"WARNING: dst_node_embeddings contains NaN or Inf values!")
+            dst_node_embeddings = torch.nan_to_num(dst_node_embeddings, nan=0.0, posinf=1.0, neginf=-1.0)
+        
+        return src_node_embeddings, dst_node_embeddings
+
+    # -------------- 时间统计相关方法 --------------
+    def start_timing(self, stage_name: str):
+        """开始计时"""
+        if self.enable_timing:
+            self._current_stage = stage_name
+            self._stage_start_time = time.time()
+    
+    def end_timing(self, stage_name: str = None):
+        """结束计时"""
+        if self.enable_timing:
+            if stage_name is None:
+                stage_name = self._current_stage
+            elapsed_time = time.time() - self._stage_start_time
+            self.epoch_timing_stats[stage_name] += elapsed_time
+            self.timing_stats[stage_name] += elapsed_time
+    
+    def reset_epoch_timing(self):
+        """重置当前epoch的时间统计"""
+        if self.enable_timing:
+            self.epoch_timing_stats.clear()
+            self.batch_count = 0
+    
+    def print_epoch_timing_summary(self, epoch: int = None):
+        """打印当前epoch的时间统计摘要"""
+        if not self.enable_timing or not self.epoch_timing_stats:
+            return
+        
+        total_time = sum(self.epoch_timing_stats.values())
+        if total_time == 0:
+            return
+        
+        print(f"\n{'='*60}")
+        if epoch is not None:
+            print(f"LDIFFDyG Epoch {epoch} 时间统计 (共 {self.batch_count} 个batch):")
+        else:
+            print(f"LDIFFDyG 时间统计 (共 {self.batch_count} 个batch):")
+        print(f"{'='*60}")
+        
+        # 按时间占比排序
+        sorted_stats = sorted(self.epoch_timing_stats.items(), key=lambda x: x[1], reverse=True)
+        
+        for stage_name, stage_time in sorted_stats:
+            percentage = (stage_time / total_time) * 100
+            avg_time = stage_time / max(self.batch_count, 1)
+            print(f"{stage_name:<25}: {stage_time:.3f}s ({percentage:5.1f}%) [平均: {avg_time:.3f}s/batch]")
+        
+        print(f"{'总时间':<25}: {total_time:.3f}s (100.0%)")
+        print(f"{'='*60}\n")
+    
+    def set_timing_enabled(self, enabled: bool):
+        """设置是否启用时间统计"""
+        self.enable_timing = enabled
+
+    # -------------- 以下辅助函数与原实现保持一致 --------------
+    def pad_sequences(
+        self,
+        node_ids: np.ndarray,
+        node_interact_times: np.ndarray,
+        nodes_neighbor_ids_list: list,
+        nodes_edge_ids_list: list,
+        nodes_neighbor_times_list: list,
+        max_input_sequence_length: int = 256,
+    ):
+        assert max_input_sequence_length - 1 > 0, "Max sequence length must be > 1"
+        max_seq_length = 0
+        for idx in range(len(nodes_neighbor_ids_list)):
+            if len(nodes_neighbor_ids_list[idx]) > max_input_sequence_length - 1:
+                nodes_neighbor_ids_list[idx] = nodes_neighbor_ids_list[idx][
+                    -(max_input_sequence_length - 1) :
+                ]
+                nodes_edge_ids_list[idx] = nodes_edge_ids_list[idx][
+                    -(max_input_sequence_length - 1) :
+                ]
+                nodes_neighbor_times_list[idx] = nodes_neighbor_times_list[idx][
+                    -(max_input_sequence_length - 1) :
+                ]
+            current_len = len(nodes_neighbor_ids_list[idx])
+            max_seq_length = max(max_seq_length, current_len)
+        max_seq_length += 1  # +1 for self node
+        max_seq_length = ((max_seq_length + self.num_heads - 1) // self.num_heads) * self.num_heads
+        max_seq_length = min(max_seq_length, self.max_input_sequence_length)
+        if not FLASH_ATTN_AVAILABLE and max_seq_length > 64:
+            max_seq_length = ((64 + self.num_heads - 1) // self.num_heads) * self.num_heads
+
+        padded_nodes_neighbor_ids = np.zeros((len(node_ids), max_seq_length), dtype=np.longlong)
+        padded_nodes_edge_ids = np.zeros((len(node_ids), max_seq_length), dtype=np.longlong)
+        padded_nodes_neighbor_times = np.zeros((len(node_ids), max_seq_length), dtype=np.float32)
+
+        for idx in range(len(node_ids)):
+            padded_nodes_neighbor_ids[idx, 0] = node_ids[idx]
+            padded_nodes_edge_ids[idx, 0] = 0
+            padded_nodes_neighbor_times[idx, 0] = node_interact_times[idx]
+            if len(nodes_neighbor_ids_list[idx]) > 0:
+                neighbor_len = min(len(nodes_neighbor_ids_list[idx]), max_seq_length - 1)
+                if neighbor_len < len(nodes_neighbor_ids_list[idx]):
+                    nodes_neighbor_ids_list[idx] = nodes_neighbor_ids_list[idx][-neighbor_len:]
+                    nodes_edge_ids_list[idx] = nodes_edge_ids_list[idx][-neighbor_len:]
+                    nodes_neighbor_times_list[idx] = nodes_neighbor_times_list[idx][
+                        -neighbor_len:
+                    ]
+                padded_nodes_neighbor_ids[idx, 1 : 1 + neighbor_len] = nodes_neighbor_ids_list[idx]
+                padded_nodes_edge_ids[idx, 1 : 1 + neighbor_len] = nodes_edge_ids_list[idx]
+                padded_nodes_neighbor_times[idx, 1 : 1 + neighbor_len] = nodes_neighbor_times_list[
+                    idx
+                ]
+        return (
+            padded_nodes_neighbor_ids,
+            padded_nodes_edge_ids,
+            padded_nodes_neighbor_times,
+        )
+
+    def get_features(
+        self,
+        node_interact_times: np.ndarray,
+        padded_nodes_neighbor_ids: np.ndarray,
+        padded_nodes_edge_ids: np.ndarray,
+        padded_nodes_neighbor_times: np.ndarray,
+        time_encoder: TimeEncoder,
+    ):
+        """Extract node/edge/time features (与原实现一致)。"""
+        if isinstance(node_interact_times, torch.Tensor):
+            node_interact_times = node_interact_times.cpu().numpy()
+        if isinstance(padded_nodes_neighbor_ids, torch.Tensor):
+            padded_nodes_neighbor_ids = padded_nodes_neighbor_ids.cpu().numpy()
+        if isinstance(padded_nodes_edge_ids, torch.Tensor):
+            padded_nodes_edge_ids = padded_nodes_edge_ids.cpu().numpy()
+        if isinstance(padded_nodes_neighbor_times, torch.Tensor):
+            padded_nodes_neighbor_times = padded_nodes_neighbor_times.cpu().numpy()
+
+        node_features = self.node_raw_features[torch.from_numpy(padded_nodes_neighbor_ids)]
+        edge_features = self.edge_raw_features[torch.from_numpy(padded_nodes_edge_ids)]
+        time_features = time_encoder(
+            timestamps=torch.from_numpy(node_interact_times[:, None] - padded_nodes_neighbor_times)
+            .float()
+            .to(self.device)
+        )
+        time_features[torch.from_numpy(padded_nodes_neighbor_ids == 0)] = 0.0
+
+        # 全部转到目标设备
+        node_features = node_features.to(self.device)
+        edge_features = edge_features.to(self.device)
+        time_features = time_features.to(self.device)
+        return node_features, edge_features, time_features
+
+    def set_neighbor_sampler(self, neighbor_sampler: NeighborSampler):
+        self.neighbor_sampler = neighbor_sampler
+        if self.neighbor_sampler.sample_neighbor_strategy in ["uniform", "time_interval_aware"]:
+            assert self.neighbor_sampler.seed is not None
+            self.neighbor_sampler.reset_random_state()
+
+    def forward(self, batch):
+        if self.enable_timing:
+            self.batch_count += 1
+        
+        src_node_ids = batch["src_node_ids"]
+        dst_node_ids = batch["dst_node_ids"]
+        node_interact_times = batch["node_interact_times"]
+        src_emb, dst_emb = self.compute_src_dst_node_temporal_embeddings(
+            src_node_ids, dst_node_ids, node_interact_times
+        )
+        return src_emb, dst_emb
+
+
+class TransformerDecoder(nn.Module):
+    def __init__(self, attention_dim: int, num_heads: int, head_dim: int, depth: int, dropout: float = 0.1):
+        super(TransformerDecoder, self).__init__()
+        self.num_heads = num_heads
+        self.head_dim = head_dim  # 保存 head_dim 为类属性
+        self.multi_head_attention = MultiheadFlashDiff2(
+            embed_dim=attention_dim,
+            num_heads=num_heads,
+            head_dim=head_dim,  # 显式传递 head_dim
+            depth=depth,
+        )
+        self.dropout = nn.Dropout(dropout)
+        self.linear_layers = nn.ModuleList([
+            nn.Linear(in_features=attention_dim, out_features=3 * attention_dim),
+            nn.Linear(in_features=(3 * attention_dim) // 2, out_features=attention_dim)
+        ])
+        self.norm_layers = nn.ModuleList([
+            RMSNorm(attention_dim),
+            RMSNorm(attention_dim)
+        ])
+
+    def forward(self, src_features, cos, sin, rotary_dim):
+        # src_features: [B, T, E]
+        # 不要在这里 half；精度由注意力内部控制
+        x = self.norm_layers[0](src_features)  # PreNorm
+
+        B, T, E = x.shape
+        assert E == self.num_heads * 2 * self.head_dim, "Embedding dimension mismatch"
+
+        # 截断 cos/sin 到需要的 rotary 维度（传给注意力，由注意力内部应用到 q/k）
+        cos = cos[:T, : rotary_dim // 2].contiguous()
+        sin = sin[:T, : rotary_dim // 2].contiguous()
+
+        # 注意：MultiheadFlashDiff2 期望 batch-first [B,T,E]
+        hidden_states = self.multi_head_attention(
+            x=x, rel_pos=(cos, sin), attn_mask=None
+        )  # [B,T,E]
+
+        # 残差 + FFN
+        outputs = src_features + self.dropout(hidden_states)
+        h = self.norm_layers[1](outputs)
+        h = self.linear_layers[0](h)
+        x1, x2 = torch.chunk(h, 2, dim=-1)
+        swiglu = F.gelu(x1) * torch.sigmoid(x2)
+        h = self.linear_layers[1](self.dropdown(swiglu) if hasattr(self, "dropdown") else self.dropout(swiglu))
+        outputs = outputs + self.dropout(h)
+        return outputs
+
+
+class NeighborCooccurrenceEncoder(nn.Module):
+    """与原实现一致：计算邻居共现特征。"""
+
+    def __init__(self, neighbor_co_occurrence_feat_dim: int, device: str = "cpu"):
+        super(NeighborCooccurrenceEncoder, self).__init__()
+        self.neighbor_co_occurrence_feat_dim = neighbor_co_occurrence_feat_dim
+        self.device = device
+        self.neighbor_co_occurrence_encode_layer = nn.Sequential(
+            nn.Linear(1, neighbor_co_occurrence_feat_dim),
+            nn.ReLU(),
+            nn.Linear(neighbor_co_occurrence_feat_dim, neighbor_co_occurrence_feat_dim),
+        )
+
+    def count_nodes_appearances(
+        self,
+        src_padded_nodes_neighbor_ids: np.ndarray,
+        dst_padded_nodes_neighbor_ids: np.ndarray,
+    ):
+        src_padded_nodes_appearances, dst_padded_nodes_appearances = [], []
+        for src_ids, dst_ids in zip(
+            src_padded_nodes_neighbor_ids, dst_padded_nodes_neighbor_ids
+        ):
+            src_unique, src_inv, src_counts = np.unique(
+                src_ids, return_inverse=True, return_counts=True
+            )
+            dst_unique, dst_inv, dst_counts = np.unique(
+                dst_ids, return_inverse=True, return_counts=True
+            )
+            src_counts_tensor = torch.tensor(src_counts[src_inv], dtype=torch.float32, device=self.device)
+            dst_counts_tensor = torch.tensor(dst_counts[dst_inv], dtype=torch.float32, device=self.device)
+            src_map = dict(zip(src_unique, src_counts))
+            dst_map = dict(zip(dst_unique, dst_counts))
+            src_counts_in_dst = torch.tensor(
+                [dst_map.get(nei, 0.0) for nei in src_ids],
+                dtype=torch.float32,
+                device=self.device,
+            )
+            dst_counts_in_src = torch.tensor(
+                [src_map.get(nei, 0.0) for nei in dst_ids],
+                dtype=torch.float32,
+                device=self.device,
+            )
+            src_padded_nodes_appearances.append(
+                torch.stack([src_counts_tensor, src_counts_in_dst], dim=1)
+            )
+            dst_padded_nodes_appearances.append(
+                torch.stack([dst_counts_in_src, dst_counts_tensor], dim=1)
+            )
+        src_padded_nodes_appearances = torch.stack(src_padded_nodes_appearances, dim=0)
+        dst_padded_nodes_appearances = torch.stack(dst_padded_nodes_appearances, dim=0)
+        src_padded_nodes_appearances[torch.from_numpy(src_padded_nodes_neighbor_ids == 0)] = 0.0
+        dst_padded_nodes_appearances[torch.from_numpy(dst_padded_nodes_neighbor_ids == 0)] = 0.0
+        return src_padded_nodes_appearances, dst_padded_nodes_appearances
+
+    def forward(
+        self,
+        src_padded_nodes_neighbor_ids: np.ndarray,
+        dst_padded_nodes_neighbor_ids: np.ndarray,
+    ):
+        (
+            src_padded_nodes_appearances,
+            dst_padded_nodes_appearances,
+        ) = self.count_nodes_appearances(
+            src_padded_nodes_neighbor_ids, dst_padded_nodes_neighbor_ids
+        )
+        src_features = self.neighbor_co_occurrence_encode_layer(
+            src_padded_nodes_appearances.unsqueeze(-1)
+        ).sum(dim=2)
+        dst_features = self.neighbor_co_occurrence_encode_layer(
+            dst_padded_nodes_appearances.unsqueeze(-1)
+        ).sum(dim=2)
+        return src_features, dst_features

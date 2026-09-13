@@ -1,0 +1,29 @@
+{
+  "model": "DyGFormer",
+  "task": "link_prediction",
+  "dataset": "wikipedia",
+  "num_runs": 3,
+  "avg_peak_memory_strict_mb": 924.2975,
+  "median_peak_memory_strict_mb": 900.1958,
+  "model_size_strict_mb": 1.9188,
+  "avg_first_step_time_s": 0.283517,
+  "median_first_step_time_s": 0.206503,
+  "memory_unstable": false,
+  "per_run": {
+    "0": {
+      "peak_memory_strict_mb": 889.9968,
+      "model_size_strict_mb": 1.9188,
+      "first_step_time_s": 0.439322
+    },
+    "1": {
+      "peak_memory_strict_mb": 982.7,
+      "model_size_strict_mb": 1.9188,
+      "first_step_time_s": 0.204726
+    },
+    "2": {
+      "peak_memory_strict_mb": 900.1958,
+      "model_size_strict_mb": 1.9188,
+      "first_step_time_s": 0.206503
+    }
+  }
+}

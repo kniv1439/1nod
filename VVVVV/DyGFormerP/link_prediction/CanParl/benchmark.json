@@ -1,0 +1,29 @@
+{
+  "model": "DyGFormerP",
+  "task": "link_prediction",
+  "dataset": "CanParl",
+  "num_runs": 3,
+  "avg_peak_memory_strict_mb": 102.2604,
+  "median_peak_memory_strict_mb": 104.7332,
+  "model_size_strict_mb": 2.1016,
+  "avg_first_step_time_s": 0.241218,
+  "median_first_step_time_s": 0.164091,
+  "memory_unstable": false,
+  "per_run": {
+    "0": {
+      "peak_memory_strict_mb": 97.3148,
+      "model_size_strict_mb": 2.1016,
+      "first_step_time_s": 0.396609
+    },
+    "1": {
+      "peak_memory_strict_mb": 104.7332,
+      "model_size_strict_mb": 2.1016,
+      "first_step_time_s": 0.162955
+    },
+    "2": {
+      "peak_memory_strict_mb": 104.7332,
+      "model_size_strict_mb": 2.1016,
+      "first_step_time_s": 0.164091
+    }
+  }
+}

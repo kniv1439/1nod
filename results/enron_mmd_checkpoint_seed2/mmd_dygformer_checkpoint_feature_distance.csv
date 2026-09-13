@@ -1,0 +1,2 @@
+dataset,type,checkpoint_path,train_interactions_full,test_interactions_full,train_interactions_used,test_interactions_used,MMD_dygformer_emb_squared,MMD_dygformer_emb_distance
+enron,social,saved_models/DyGFormer/enron/DyGFormer_seed2/DyGFormer_seed2.pkl,87664,18797,87664,18797,0.19810871903240024,0.44509405638853483

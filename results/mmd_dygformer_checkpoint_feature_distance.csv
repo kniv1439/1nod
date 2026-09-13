@@ -1,0 +1,10 @@
+dataset,type,checkpoint_path,train_interactions_full,test_interactions_full,train_interactions_used,test_interactions_used,MMD_dygformer_emb_squared,MMD_dygformer_emb_distance
+UNvote,political,saved_models/DyGFormer/UNvote/DyGFormer_seed1/DyGFormer_seed1.pkl,745325,177289,745325,177289,0.9905509562582164,0.9952642645339058
+USLegis,political,saved_models/DyGFormer/USLegis/DyGFormer_seed1/DyGFormer_seed1.pkl,45441,9804,45441,9804,0.5510944289664055,0.742357345869498
+enron,social,saved_models/DyGFormer/enron/DyGFormer_seed1/DyGFormer_seed1.pkl,87664,18797,87664,18797,0.20369617876014612,0.45132713053853313
+UNtrade,political,saved_models/DyGFormer/UNtrade/DyGFormer_seed1/DyGFormer_seed1.pkl,367181,81987,367181,81987,0.20322123461419128,0.45080065950949016
+reddit,social,saved_models/DyGFormer/reddit/DyGFormer_seed1/DyGFormer_seed1.pkl,470712,100868,470712,100868,0.17365758245708918,0.4167224285505751
+CanParl,political,saved_models/DyGFormer/CanParl/DyGFormer_seed1/DyGFormer_seed1.pkl,52556,17078,52556,17078,0.14193888092828733,0.3767477683122852
+mooc,mooc,saved_models/DyGFormer/mooc/DyGFormer_seed1/DyGFormer_seed1.pkl,288224,61763,288224,61763,0.1318288930934557,0.3630824880016326
+uci,social,saved_models/DyGFormer/uci/DyGFormer_seed1/DyGFormer_seed1.pkl,41884,8976,41884,8976,0.09977105144104836,0.3158655591245243
+wikipedia,social,saved_models/DyGFormer/wikipedia/DyGFormer_seed1/DyGFormer_seed1.pkl,110231,23623,110231,23623,0.0914956679593848,0.30248250851807085

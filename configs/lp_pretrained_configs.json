@@ -1,0 +1,656 @@
+{
+  "wikipedia": {
+    "TGAT": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 16,
+      "num_layers": 2,
+      "num_heads": 2,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.1
+    },
+    "DyGFormer": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerTW": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "max_second_hop_length": 5
+    },
+    "DyGFormerF": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerFF": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerRF": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerRRF": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 1,
+      "num_heads": 2,
+      "patch_size": 2,
+      "max_input_sequence_length": 256,
+      "dropout": 0.3
+    },
+    "DyGFormerRFRF": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 128,
+      "dropout": 0.1
+    },
+    "DyGFormerFR": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerPF": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerWSDMP": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerWSDMR": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "PDyGFormer": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "use_multi_scale": true,
+      "patch_size_list": [
+        8,
+        6,
+        4,
+        2
+      ]
+    },
+    "DyGFormerC": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerD": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "use_lpu": true,
+      "use_rpe": true
+    },
+    "DyGFormerP": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerR": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerST": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerRS": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "STDyGFormer": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 3,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DIFFDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "STDIFFDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 16,
+      "num_layers": 3,
+      "num_heads": 12,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "PathDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "NPTDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DeformableDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 32,
+      "dropout": 0.1
+    },
+    "CARDDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "e_layers": 2,
+      "patch_len": 4,
+      "stride": 1
+    },
+    "OCARDDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "dp_rank": 8,
+      "alpha": 0.9,
+      "merge_size": 1,
+      "e_layers": 2,
+      "patch_len": 4,
+      "stride": 1
+    },
+    "TIMERDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerCP": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerCR": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerPC": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "dp_rank": 8,
+      "alpha": 0.9,
+      "merge_size": 1,
+      "momentum": 0.1
+    },
+    "DyGFormerRC": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "dp_rank": 8,
+      "alpha": 0.9,
+      "merge_size": 1,
+      "momentum": 0.1
+    },
+    "LDIFFDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 2,
+      "patch_size": 1,
+      "max_input_sequence_length": 128,
+      "dropout": 0.1,
+      "use_second_hop": false
+    }
+  },
+  "reddit": {
+    "TGAT": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 16,
+      "num_layers": 2,
+      "num_heads": 2,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.1
+    },
+    "DyGFormer": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerTW": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "max_second_hop_length": 5
+    },
+    "DyGFormerF": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerFF": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerRF": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerRRF": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 1,
+      "num_heads": 2,
+      "patch_size": 2,
+      "max_input_sequence_length": 256,
+      "dropout": 0.3
+    },
+    "DyGFormerRFRF": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 128,
+      "dropout": 0.1
+    },
+    "DyGFormerFR": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerPF": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerWSDMP": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerWSDMR": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "PDyGFormer": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "use_multi_scale": true,
+      "patch_size_list": [
+        8,
+        6,
+        4,
+        2
+      ]
+    },
+    "DyGFormerC": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerD": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "use_lpu": true,
+      "use_rpe": true
+    },
+    "DyGFormerP": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerR": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerST": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerRS": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "STDyGFormer": {
+      "channel_embedding_dim": 50,
+      "time_feat_dim": 100,
+      "num_layers": 3,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DIFFDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "STDIFFDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 16,
+      "num_layers": 3,
+      "num_heads": 12,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "PathDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "NPTDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DeformableDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 1,
+      "max_input_sequence_length": 64,
+      "dropout": 0.2
+    },
+    "CARDDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "e_layers": 2,
+      "patch_len": 4,
+      "stride": 1
+    },
+    "OCARDDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "dp_rank": 8,
+      "alpha": 0.9,
+      "merge_size": 1,
+      "e_layers": 2,
+      "patch_len": 4,
+      "stride": 1
+    },
+    "TIMERDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerCP": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerCR": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2
+    },
+    "DyGFormerPC": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "dp_rank": 8,
+      "alpha": 0.9,
+      "merge_size": 1,
+      "momentum": 0.1
+    },
+    "DyGFormerRC": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 4,
+      "patch_size": 4,
+      "max_input_sequence_length": 512,
+      "dropout": 0.2,
+      "dp_rank": 8,
+      "alpha": 0.9,
+      "merge_size": 1,
+      "momentum": 0.1
+    },
+    "LDIFFDyG": {
+      "channel_embedding_dim": 32,
+      "time_feat_dim": 100,
+      "num_layers": 2,
+      "num_heads": 2,
+      "patch_size": 1,
+      "max_input_sequence_length": 128,
+      "dropout": 0.1,
+      "use_second_hop": false
+    }
+  }
+}

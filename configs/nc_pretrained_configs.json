@@ -1,0 +1,983 @@
+{
+  "wikipedia": {
+    "DIFFDyG": {
+      "DIFFDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DIFFDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DIFFDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormer": {
+      "DyGFormer_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormer_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerC": {
+      "DyGFormerC_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "DyGFormerC_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "DyGFormerC_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "DyGFormerCP": {
+      "DyGFormerCP_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerCP_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerCP_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerCR": {
+      "DyGFormerCR_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerCR_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerCR_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerD": {
+      "DyGFormerD_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "DyGFormerD_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "DyGFormerD_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "DyGFormerF": {
+      "DyGFormerF_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerF_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerFF": {
+      "DyGFormerFF_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerFF_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerP": {
+      "DyGFormerP_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerP_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerPC": {
+      "DyGFormerPC_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerPC_seed1": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerPC_seed2": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerPF": {
+      "DyGFormerPF_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerPF_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerPF_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerR": {
+      "DyGFormerR_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerR_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerR_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerRC": {
+      "DyGFormerRC_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerRC_seed1": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerRC_seed2": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerRF": {
+      "DyGFormerRF_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerRF_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerRF_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerRRF": {
+      "DyGFormerRRF_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 1,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerRRF_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 1,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerRRF_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 1,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      }
+    },
+    "DyGFormerST": {
+      "DyGFormerST_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerST_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerST_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerTW": {
+      "DyGFormerTW_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop128_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop128_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed0_hop16_patch16": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop16_patch32": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100
+      },
+      "DyGFormerTW_seed0_hop16_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop16_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed0_hop32_patch16": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop32_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop32_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed0_hop5_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop64_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed0_hop64_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop128_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop128_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed1_hop16_patch16": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop16_patch32": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100
+      },
+      "DyGFormerTW_seed1_hop16_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop16_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed1_hop32_patch16": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop32_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop32_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed1_hop5_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop64_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed1_hop64_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop128_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop128_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed2_hop16_patch16": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop16_patch32": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100
+      },
+      "DyGFormerTW_seed2_hop16_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop16_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed2_hop32_patch16": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop32_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop32_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerTW_seed2_hop5_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop64_patch4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerTW_seed2_hop64_patch8": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      }
+    },
+    "DyGFormerWSDMP": {
+      "DyGFormerWSDMP_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerWSDMP_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerWSDMP_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerWSDMR": {
+      "DyGFormerWSDMR_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerWSDMR_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerWSDMR_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "LDIFFDyG": {
+      "LDIFFDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "num_layers": 2,
+        "num_heads": 2,
+        "patch_size": 1,
+        "max_input_sequence_length": 128
+      },
+      "LDIFFDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "num_layers": 2,
+        "num_heads": 2,
+        "patch_size": 1,
+        "max_input_sequence_length": 128
+      },
+      "LDIFFDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "num_layers": 2,
+        "num_heads": 2,
+        "patch_size": 1,
+        "max_input_sequence_length": 128
+      }
+    },
+    "NPTDyG": {
+      "NPTDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "NPTDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "NPTDyG_seed3": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "NPTDyG_seed4": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "PathDyG": {
+      "PathDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "PathDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "PathDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "TIMERDyG": {
+      "TIMERDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "TIMERDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "TIMERDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    }
+  },
+  "reddit": {
+    "DIFFDyG": {
+      "DIFFDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DIFFDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DIFFDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormer": {
+      "DyGFormer_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormer_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormer_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      }
+    },
+    "DyGFormerC": {
+      "DyGFormerC_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "DyGFormerCP": {
+      "DyGFormerCP_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerCP_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerCR": {
+      "DyGFormerCR_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerCR_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerD": {
+      "DyGFormerD_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "DyGFormerD_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "DyGFormerD_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "DyGFormerF": {
+      "DyGFormerF_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerF_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerFF": {
+      "DyGFormerFF_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerFF_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerP": {
+      "DyGFormerP_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerP_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerP_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerPC": {
+      "DyGFormerPC_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerPF": {
+      "DyGFormerPF_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerR": {
+      "DyGFormerR_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerR_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerR_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerRC": {
+      "DyGFormerRC_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerRRF": {
+      "DyGFormerRRF_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 1,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      },
+      "DyGFormerRRF_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 1,
+        "time_feat_dim": 100,
+        "patch_size": 2
+      }
+    },
+    "DyGFormerST": {
+      "DyGFormerST_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerST_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerST_seed2": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerWSDMP": {
+      "DyGFormerWSDMP_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerWSDMP_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "DyGFormerWSDMR": {
+      "DyGFormerWSDMR_seed0": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "DyGFormerWSDMR_seed1": {
+        "channel_embedding_dim": 50,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "LDIFFDyG": {
+      "LDIFFDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "LDIFFDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "LDIFFDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    },
+    "NPTDyG": {
+      "NPTDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      },
+      "NPTDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "num_layers": 2,
+        "num_heads": 2,
+        "time_feat_dim": 100,
+        "patch_size": 4
+      }
+    },
+    "PathDyG": {
+      "PathDyG_seed0": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "PathDyG_seed1": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      },
+      "PathDyG_seed2": {
+        "channel_embedding_dim": 32,
+        "time_feat_dim": 100,
+        "patch_size": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "model": "DyGFormerP",
+  "task": "link_prediction",
+  "dataset": "reddit",
+  "num_runs": 3,
+  "avg_peak_memory_strict_mb": 596.814,
+  "median_peak_memory_strict_mb": 596.994,
+  "model_size_strict_mb": 2.1016,
+  "avg_first_step_time_s": 0.233052,
+  "median_first_step_time_s": 0.210544,
+  "memory_unstable": false,
+  "per_run": {
+    "0": {
+      "peak_memory_strict_mb": 587.7422,
+      "model_size_strict_mb": 2.1016,
+      "first_step_time_s": 0.3251
+    },
+    "1": {
+      "peak_memory_strict_mb": 596.994,
+      "model_size_strict_mb": 2.1016,
+      "first_step_time_s": 0.210544
+    },
+    "2": {
+      "peak_memory_strict_mb": 605.7057,
+      "model_size_strict_mb": 2.1016,
+      "first_step_time_s": 0.163513
+    }
+  }
+}

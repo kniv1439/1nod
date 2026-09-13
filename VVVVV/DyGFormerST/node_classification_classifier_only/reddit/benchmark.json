@@ -1,0 +1,30 @@
+{
+  "model": "DyGFormerST",
+  "task": "node_classification_classifier_only",
+  "dataset": "reddit",
+  "node_cls_train_mode": "classifier_only",
+  "num_runs": 3,
+  "avg_peak_memory_strict_mb": 525.2509,
+  "median_peak_memory_strict_mb": 527.8628,
+  "model_size_strict_mb": 3.1493,
+  "avg_first_step_time_s": 0.121224,
+  "median_first_step_time_s": 0.052542,
+  "memory_unstable": false,
+  "per_run": {
+    "0": {
+      "peak_memory_strict_mb": 518.9417,
+      "model_size_strict_mb": 3.1493,
+      "first_step_time_s": 0.25861
+    },
+    "1": {
+      "peak_memory_strict_mb": 528.9482,
+      "model_size_strict_mb": 3.1493,
+      "first_step_time_s": 0.052542
+    },
+    "2": {
+      "peak_memory_strict_mb": 527.8628,
+      "model_size_strict_mb": 3.1493,
+      "first_step_time_s": 0.052519
+    }
+  }
+}
